@@ -2,7 +2,7 @@
 
 local TalkAI = {}
 
-TalkAI.NPCName = "Nova"
+TalkAI.NPCName = "Verity."
 
 TalkAI.Memory = {
 	lastMessage = "",
