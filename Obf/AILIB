@@ -1,0 +1,113 @@
+-- TalkAI.lua (CLIENT-SIDE TRIGGER AI)
+
+local TalkAI = {}
+
+TalkAI.NPCName = "Nova"
+
+TalkAI.Memory = {
+	lastMessage = "",
+	flags = {}
+}
+
+-- =========================
+-- MESSAGE QUEUE SYSTEM
+-- =========================
+TalkAI.MessageQueue = {}
+
+function TalkAI:Say(text, duration)
+	table.insert(self.MessageQueue, {
+		text = text,
+		time = duration or 2
+	})
+end
+
+function TalkAI:GetNextMessage()
+	return table.remove(self.MessageQueue, 1)
+end
+
+-- =========================
+-- TRIGGERS STORAGE
+-- =========================
+TalkAI.Triggers = {
+	time = {},      -- scheduled messages
+	condition = {}, -- logic-based messages
+}
+
+-- =========================
+-- TIME-BASED MESSAGES
+-- =========================
+function TalkAI:AddTimedMessage(delaySeconds, message)
+	table.insert(self.Triggers.time, {
+		runAt = os.clock() + delaySeconds,
+		message = message,
+		used = false
+	})
+end
+
+-- =========================
+-- CONDITION-BASED MESSAGES
+-- conditionFunc must return true/false
+-- =========================
+function TalkAI:AddConditionMessage(conditionFunc, message, repeatable)
+	table.insert(self.Triggers.condition, {
+		check = conditionFunc,
+		message = message,
+		repeatable = repeatable or false,
+		fired = false
+	})
+end
+
+-- =========================
+-- OPTIONAL CHAT RESPONSE (fallback AI)
+-- =========================
+local function simpleReply(msg)
+	msg = string.lower(msg)
+
+	if msg:find("hello") or msg:find("hi") then
+		return "Hey."
+	elseif msg:find("help") then
+		return "What do you need?"
+	elseif msg:find("who are you") then
+		return "I'm " .. TalkAI.NPCName .. "."
+	end
+
+	return "I don't know about that."
+end
+
+function TalkAI:Reply(playerMessage)
+	self.Memory.lastMessage = playerMessage
+	return simpleReply(playerMessage)
+end
+
+-- =========================
+-- UPDATE LOOP (RUN THIS IN LOCAL SCRIPT)
+-- =========================
+function TalkAI:Update(player)
+	-- 1. TIME TRIGGERS
+	for _, t in ipairs(self.Triggers.time) do
+		if not t.used and os.clock() >= t.runAt then
+			self:Say(t.message, 3)
+			t.used = true
+		end
+	end
+
+	-- 2. CONDITION TRIGGERS
+	for _, c in ipairs(self.Triggers.condition) do
+		if c.check(player) then
+			if c.repeatable then
+				self:Say(c.message, 3)
+			else
+				if not c.fired then
+					self:Say(c.message, 3)
+					c.fired = true
+				end
+			end
+		else
+			if c.repeatable then
+				c.fired = false
+			end
+		end
+	end
+end
+
+return TalkAI
