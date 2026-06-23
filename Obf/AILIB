@@ -8,7 +8,9 @@ TalkAI.Memory = {
 	lastMessage = "",
 	flags = {}
 }
-
+local function minretsec(min)
+    return min*60
+end
 -- =========================
 -- MESSAGE QUEUE SYSTEM
 -- =========================
@@ -56,20 +58,36 @@ function TalkAI:AddConditionMessage(conditionFunc, message, repeatable)
 		fired = false
 	})
 end
+local somethingiscoming = false
 
 -- =========================
 -- OPTIONAL CHAT RESPONSE (fallback AI)
 -- =========================
-local function simpleReply(msg)
+local function simpleReply(msg,somethingiscoming: boolean)
 	msg = string.lower(msg)
 
 	if msg:find("hello") or msg:find("hi") then
+        if somethingiscoming == true then return "Something is coming in 3 days."
 		return "Hey."
 	elseif msg:find("help") then
+        if somethingiscoming == true then return "Something is coming in 3 days."
 		return "What do you need?"
 	elseif msg:find("who are you") then
+        if somethingiscoming == true then return "Something is coming in 3 days."
 		return "I'm " .. TalkAI.NPCName .. "."
-	end
+    elseif msg:find("Balls")
+    if somethingiscoming == true then return "Something is coming in 3 days."
+    return "Bruh (youve found a easter egg with Verity!)"
+
+elseif msg:find("Whats your name?") or msg:find("What is your name")
+if somethingiscoming == true then return "Something is coming in 3 days."
+      return "Hello! My Name's Verity. I Know everything."
+elseif msg:find("Whats up Verity?") or msg:find("What is up Verity?") or msg:find("Verity, Hows Life going?")
+if somethingiscoming == true then return "Something is coming in 3 days."
+
+      return "Fine" 
+
+end
 
 	return "I don't know about that."
 end
