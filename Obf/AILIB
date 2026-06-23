@@ -2,15 +2,32 @@
 
 local TalkAI = {}
 
-TalkAI.NPCName = "Verity."
+TalkAI.NPCName = "Verity"
 
 TalkAI.Memory = {
 	lastMessage = "",
 	flags = {}
 }
+
+-- =========================
+-- TIME HELPERS
+-- =========================
 local function minretsec(min)
-    return min*60
+	return min * 60
 end
+
+-- global event flag
+local somethingiscoming = false
+
+task.spawn(function()
+	while task.wait(1) do
+		-- example trigger: 10 minutes
+		if os.clock() >= 10 * 60 then
+			somethingiscoming = true
+		end
+	end
+end)
+
 -- =========================
 -- MESSAGE QUEUE SYSTEM
 -- =========================
@@ -31,13 +48,10 @@ end
 -- TRIGGERS STORAGE
 -- =========================
 TalkAI.Triggers = {
-	time = {},      -- scheduled messages
-	condition = {}, -- logic-based messages
+	time = {},
+	condition = {}
 }
 
--- =========================
--- TIME-BASED MESSAGES
--- =========================
 function TalkAI:AddTimedMessage(delaySeconds, message)
 	table.insert(self.Triggers.time, {
 		runAt = os.clock() + delaySeconds,
@@ -46,10 +60,6 @@ function TalkAI:AddTimedMessage(delaySeconds, message)
 	})
 end
 
--- =========================
--- CONDITION-BASED MESSAGES
--- conditionFunc must return true/false
--- =========================
 function TalkAI:AddConditionMessage(conditionFunc, message, repeatable)
 	table.insert(self.Triggers.condition, {
 		check = conditionFunc,
@@ -58,50 +68,71 @@ function TalkAI:AddConditionMessage(conditionFunc, message, repeatable)
 		fired = false
 	})
 end
-local somethingiscoming = false
 
 -- =========================
--- OPTIONAL CHAT RESPONSE (fallback AI)
+-- CHAT REPLY SYSTEM
 -- =========================
-local function simpleReply(msg,somethingiscoming: boolean)
+local function simpleReply(msg, somethingiscoming)
 	msg = string.lower(msg)
 
+	-- HELLO
 	if msg:find("hello") or msg:find("hi") then
-        if somethingiscoming == true then return "Something is coming in 3 days."
+		if somethingiscoming then
+			return "Something is coming in 3 days."
+		end
 		return "Hey."
+
+	-- HELP
 	elseif msg:find("help") then
-        if somethingiscoming == true then return "Something is coming in 3 days."
+		if somethingiscoming then
+			return "Something is coming in 3 days."
+		end
 		return "What do you need?"
+
+	-- WHO ARE YOU
 	elseif msg:find("who are you") then
-        if somethingiscoming == true then return "Something is coming in 3 days."
+		if somethingiscoming then
+			return "Something is coming in 3 days."
+		end
 		return "I'm " .. TalkAI.NPCName .. "."
-    elseif msg:find("Balls")
-    if somethingiscoming == true then return "Something is coming in 3 days."
-    return "Bruh (youve found a easter egg with Verity!)"
 
-elseif msg:find("Whats your name?") or msg:find("What is your name")
-if somethingiscoming == true then return "Something is coming in 3 days."
-      return "Hello! My Name's Verity. I Know everything."
-elseif msg:find("Whats up Verity?") or msg:find("What is up Verity?") or msg:find("Verity, Hows Life going?")
-if somethingiscoming == true then return "Something is coming in 3 days."
+	-- EASTER EGG
+	elseif msg:find("balls") then
+		if somethingiscoming then
+			return "Something is coming in 3 days."
+		end
+		return "Bruh (you found an easter egg with Verity!)"
 
-      return "Fine" 
+	-- NAME
+	elseif msg:find("what's your name") or msg:find("what is your name") then
+		if somethingiscoming then
+			return "Something is coming in 3 days."
+		end
+		return "Hello! My name's Verity. I know everything."
 
-end
+	-- HOW ARE YOU
+	elseif msg:find("what's up verity") or msg:find("how's life") then
+		if somethingiscoming then
+			return "Something is coming in 3 days."
+		end
+		return "Fine."
+
+	end
 
 	return "I don't know about that."
 end
 
 function TalkAI:Reply(playerMessage)
 	self.Memory.lastMessage = playerMessage
-	return simpleReply(playerMessage)
+	return simpleReply(playerMessage, somethingiscoming)
 end
 
 -- =========================
--- UPDATE LOOP (RUN THIS IN LOCAL SCRIPT)
+-- UPDATE LOOP
 -- =========================
 function TalkAI:Update(player)
-	-- 1. TIME TRIGGERS
+
+	-- TIME TRIGGERS
 	for _, t in ipairs(self.Triggers.time) do
 		if not t.used and os.clock() >= t.runAt then
 			self:Say(t.message, 3)
@@ -109,16 +140,14 @@ function TalkAI:Update(player)
 		end
 	end
 
-	-- 2. CONDITION TRIGGERS
+	-- CONDITION TRIGGERS
 	for _, c in ipairs(self.Triggers.condition) do
 		if c.check(player) then
 			if c.repeatable then
 				self:Say(c.message, 3)
-			else
-				if not c.fired then
-					self:Say(c.message, 3)
-					c.fired = true
-				end
+			elseif not c.fired then
+				self:Say(c.message, 3)
+				c.fired = true
 			end
 		else
 			if c.repeatable then
