@@ -1097,6 +1097,14 @@ static bool TryCraft(void) {
             return true;
         }
     }
+    // Stone hoe recipe
+    if (a == ITEM_COBBLESTONE && b == ITEM_COBBLESTONE && c == ITEM_AIR && d == ITEM_AIR && e == ITEM_STICK && f == ITEM_AIR && g == ITEM_AIR && h == ITEM_STICK && i == ITEM_AIR) {
+        if (ConsumeGridInputs(ITEM_COBBLESTONE, ITEM_COBBLESTONE, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, 9)) {
+            AddItemToInventory(ITEM_STONE_HOE, 1);
+            ClearCraftingGrid();
+            return true;
+        }
+    }
     
     // Iron tool recipes
     if (a == ITEM_IRON_INGOT && b == ITEM_IRON_INGOT && c == ITEM_AIR && d == ITEM_IRON_INGOT && e == ITEM_STICK && f == ITEM_AIR && g == ITEM_AIR && h == ITEM_STICK && i == ITEM_AIR) {
@@ -1120,6 +1128,14 @@ static bool TryCraft(void) {
             return true;
         }
     }
+    // Iron hoe recipe
+    if (a == ITEM_IRON_INGOT && b == ITEM_IRON_INGOT && c == ITEM_AIR && d == ITEM_AIR && e == ITEM_STICK && f == ITEM_AIR && g == ITEM_AIR && h == ITEM_STICK && i == ITEM_AIR) {
+        if (ConsumeGridInputs(ITEM_IRON_INGOT, ITEM_IRON_INGOT, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, 9)) {
+            AddItemToInventory(ITEM_IRON_HOE, 1);
+            ClearCraftingGrid();
+            return true;
+        }
+    }
     
     // Diamond tool recipes
     if (a == ITEM_DIAMOND && b == ITEM_DIAMOND && c == ITEM_AIR && d == ITEM_DIAMOND && e == ITEM_STICK && f == ITEM_AIR && g == ITEM_AIR && h == ITEM_STICK && i == ITEM_AIR) {
@@ -1139,6 +1155,14 @@ static bool TryCraft(void) {
     if (a == ITEM_DIAMOND && b == ITEM_AIR && c == ITEM_AIR && d == ITEM_AIR && e == ITEM_STICK && f == ITEM_AIR && g == ITEM_AIR && h == ITEM_STICK && i == ITEM_AIR) {
         if (ConsumeGridInputs(ITEM_DIAMOND, ITEM_AIR, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, 9)) {
             AddItemToInventory(ITEM_DIAMOND_SHOVEL, 1);
+            ClearCraftingGrid();
+            return true;
+        }
+    }
+    // Diamond hoe recipe
+    if (a == ITEM_DIAMOND && b == ITEM_DIAMOND && c == ITEM_AIR && d == ITEM_AIR && e == ITEM_STICK && f == ITEM_AIR && g == ITEM_AIR && h == ITEM_STICK && i == ITEM_AIR) {
+        if (ConsumeGridInputs(ITEM_DIAMOND, ITEM_DIAMOND, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, ITEM_AIR, ITEM_STICK, ITEM_AIR, 9)) {
+            AddItemToInventory(ITEM_DIAMOND_HOE, 1);
             ClearCraftingGrid();
             return true;
         }
