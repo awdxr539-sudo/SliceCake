@@ -1,0 +1,100 @@
+--[[
+
+		Gui2Lua™
+		10zOfficial
+		Version 1.0.0
+
+]]
+
+local PRECISIONAUTO = false
+local ACTIVETCOLLECT=false
+local TPTOSPROUT = false
+-- Instanceslocal OrionLib = loadstring(game:HttpGet(('https://githubusercontent.com')))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Solara Script Hub",
+   LoadingTitle = "Loading Hub...",
+   LoadingSubtitle = "by User",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "SolaraHub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "",
+      RememberJoins = true
+   },
+   KeySystem = false
+})
+
+local MainTab = Window:CreateTab("Main Cheats", 4483362458) -- Title, Image ID
+
+-- 1. Auto Sprout TP Button
+local Button1 = MainTab:CreateButton({
+   Name = "Auto Sprout TP",
+   Callback = function()
+       -- [FILL IN YOUR AUTO SPROUT TP CODE HERE]
+         TPTOSPROUT = not TPTOSPROUT
+       print("Auto Sprout TP clicked")
+   end,
+})
+
+-- 2. Auto Collect Button
+local Button2 = MainTab:CreateButton({
+   Name = "Auto Collect",
+   Callback = function()
+   	        ACTIVETCOLLECT = not ACTIVETCOLLECT
+
+       -- [FILL IN YOUR AUTO COLLECT CODE HERE]
+       print("Auto Collect clicked")
+   end,
+})
+
+-- 3. Auto Precision Button
+local Button3 = MainTab:CreateButton({
+   Name = "Auto Precision",
+   Callback = function()
+       -- [FILL IN YOUR AUTO PRECISION CODE HERE]
+       PRECISIONAUTO = not PRECISIONAUTO
+       print("Auto Precision clicked")
+   end,
+})
+
+-- 4. TP to Mountain Top Button
+local Button4 = MainTab:CreateButton({
+   Name = "TP to Mountain Top",
+   Callback = function()
+       -- [FILL IN YOUR TP TO MOUNTAIN TOP CODE HERE]
+       print("TP to Mountain Top clicked")
+   end,
+})
+
+Rayfield:Notify({
+   Title = "Hub Loaded!",
+   Content = "Solara Script Hub is ready to use.",
+   Duration = 5,
+   Image = 4483362458,
+})
+
+
+
+-- Initializes the library and brings up the GUI
+
+workspace.Collectibles.ChildAdded:Connect(function(part)
+	if not ACTIVETCOLLECT then return end
+	    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
+task.wait(0.1151)
+end)
+workspace.Sprouts.ChildAdded:Connect(function(part) 
+	if not TPTOSPROUT then return end
+		    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
+task.wait(.1151)
+    end)
+    workspace.Particles.ChildAdded:Connect(function(part)
+    	
+        if not PRECISIONAUTO or part.Name ~= "Crosshair" then return end
+		    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
+
+    end)
