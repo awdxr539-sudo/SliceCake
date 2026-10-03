@@ -1,3 +1,4 @@
+--!optimize 2
 --[[
 
 		Gui2Lua™
@@ -5,21 +6,28 @@
 		Version 1.0.0
 
 ]]
-
+local SPIDER = {
+   [1] = workspace.Flowers["FP6-0-25"].Position,
+   [2] = workspace.Flowers["FP6-24-8"].Position,
+   [3] = workspace.Flowers["FP6-21-6"].Position
+}
+local SPIDERINDEX = 1
+local AUTOFARMSPIDER = false
 local PRECISIONAUTO = false
 local ACTIVETCOLLECT=false
 local TPTOSPROUT = false
+local hum = game.Players.LocalPlayer.Character.Humanoid
 -- Instanceslocal OrionLib = loadstring(game:HttpGet(('https://githubusercontent.com')))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Solara Script Hub",
+   Name = "shit sham script hub",
    LoadingTitle = "Loading Hub...",
-   LoadingSubtitle = "by User",
+   LoadingSubtitle = "by audio shitter",
    ConfigurationSaving = {
       Enabled = false,
       FolderName = nil,
-      FileName = "SolaraHub"
+      FileName = "takefouls"
    },
    Discord = {
       Enabled = false,
@@ -64,10 +72,23 @@ local Button3 = MainTab:CreateButton({
 
 -- 4. TP to Mountain Top Button
 local Button4 = MainTab:CreateButton({
-   Name = "TP to Mountain Top",
+   Name = "SPIDER AUTOFARM",
    Callback = function()
        -- [FILL IN YOUR TP TO MOUNTAIN TOP CODE HERE]
-       print("TP to Mountain Top clicked")
+       AUTOFARMSPIDER = not AUTOFARMSPIDER
+       print("nuh uh")
+       if AUTOFARMSPIDER then
+        while AUTOFARMSPIDER do task.wait(1)
+        
+            hum:MoveTo(SPIDER[SPIDERINDEX])
+            hum.MoveToFinished:Connect(function()
+              SPIDERINDEX = SPIDERINDEX + 1
+              if SPIDERINDEX > 3 then
+              SPIDERINDEX = 1
+              end
+            end)
+        end
+       end
    end,
 })
 
